@@ -1,6 +1,6 @@
 # LittleFishers Specific Ignorations
 # Ignore all packages since we decided to sync them manually
-/[Pp]ackages/
+# /[Pp]ackages/
 
 # All 3rd party assets have been removed from the repo
 /[Aa]ssets/_3rdParty/
