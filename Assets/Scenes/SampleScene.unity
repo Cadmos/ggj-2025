@@ -657,6 +657,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1448422165}
   - component: {fileID: 1448422164}
+  - component: {fileID: 1448422166}
   m_Layer: 0
   m_Name: Input Manager
   m_TagString: Untagged
@@ -691,7 +692,7 @@ MonoBehaviour:
   m_ActionEvents: []
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
-  m_DefaultActionMap: 272f6d14-89ba-496f-b7ff-215263d3219f
+  m_DefaultActionMap: UI
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 330585545}
 --- !u!4 &1448422165
@@ -709,6 +710,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1448422166
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1448422163}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e93357e6c9c390f48ab734d6fdf31dc8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1499863285
 MonoBehaviour:
   m_ObjectHideFlags: 0
