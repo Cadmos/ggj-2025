@@ -7,6 +7,7 @@
 
 # Plugins have been removed from the repo
 /[Aa]ssets/Plugins/
+Plugins.meta
 
 # SampleScene - This scene folder has big scene files, they are removed from repo
 /[Aa]ssets/Scenes/SampleScene/
