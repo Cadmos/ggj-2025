@@ -1,5 +1,6 @@
 using System;
 using GGJ.GameEventSystem;
+using GGJ.IoniDebug;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
@@ -44,7 +45,7 @@ namespace GGJ
 
         public void OnPlayerGrounded()
         {
-            Debug.Log("Grounded");
+            D.Warn("Grounded");
             if(_groundCheck.isGrounded) canJump = true;
             
         }
