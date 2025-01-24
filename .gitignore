@@ -10,7 +10,6 @@
 Plugins.meta
 
 # SampleScene - This scene folder has big scene files, they are removed from repo
-/[Aa]ssets/Scenes/SampleScene/
 
 # JetBrains Rider
 *.sln.iml
