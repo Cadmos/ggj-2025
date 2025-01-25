@@ -42,7 +42,7 @@ namespace GGJ
             // 4. Move the character
             //    - Using SimpleMove if you want built-in gravity
             //    - Or controller.Move(...) if you handle gravity yourself
-            controller.SimpleMove(moveDirection * moveSpeed);
+            controller.Move(moveDirection * moveSpeed);
 
             // 5. Optionally rotate the character to face movement direction
             if (moveDirection.sqrMagnitude > 0.001f)

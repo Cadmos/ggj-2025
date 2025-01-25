@@ -1,4 +1,5 @@
 using System;
+using GGJ.Bubbles;
 using GGJ.GameFlow.Spawning;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -39,6 +40,18 @@ namespace GGJ.GameFlow
             {
                 MoveTo(currentCheckpoint.SpawnPoint);
             }
+        }
+
+        public void AttachToBubble(ElevatorBubble elevatorBubble)
+        {
+            var joint = gameObject.AddComponent<FixedJoint>();
+            joint.connectedBody = elevatorBubble.GetComponent<Rigidbody>();
+        }
+
+        public void MoveWithBubble(Vector3 bubblePosition)
+        {
+            Vector3 offset = bubblePosition - transform.position;
+            _controller.Move(offset * Time.deltaTime);
         }
     }
 }

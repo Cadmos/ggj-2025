@@ -37,7 +37,29 @@ namespace GGJ.Bubbles
             
             Debug.Log($"Making a new bubble <3");
             var newBubble = bubblers.RandomItem().MakeBubble();
+            newBubble.GetComponent<ElevatorBubble>().bubbleHandler = this;
             bubbles.Add(newBubble); 
+            Debug.Log($"Bubble count is now: {maxBubbles}");
+        }
+
+        public void PopBubble(ElevatorBubble bubble)
+        {
+            if (bubbles.Count <= 0)
+            {
+                Debug.Log("No bubbles to pop");
+                return;
+            }
+            
+            if(bubble == null)
+            {
+                Debug.Log("Bubble could not be popped. It was null");
+                return;
+            }
+            
+            Debug.Log($"Popping a bubble :(");
+            
+            bubbles.Remove(bubble.gameObject);
+            Destroy(bubble.gameObject);
             Debug.Log($"Bubble count is now: {maxBubbles}");
         }
     }

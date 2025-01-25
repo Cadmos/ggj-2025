@@ -106,6 +106,7 @@ MonoBehaviour:
   abilities:
   - {fileID: 11400000, guid: b73ebc92c4dff6b4b9f88219033157e2, type: 2}
   - {fileID: 11400000, guid: 369a433f15abc564bbf5d733e3f1772a, type: 2}
+  - {fileID: 11400000, guid: 30439847064408444ba2b6a68f113390, type: 2}
   cameraTransform: {fileID: 0}
   orientationTransform: {fileID: 0}
   controller: {fileID: 0}
