@@ -26,7 +26,7 @@ namespace GGJ
 
         public override void UpdateAbility(float deltaTime)
         {
-            Debug.Log("update on " + name);
+            //Debug.Log("update on " + name);
             // 1. Define our 'worldUp' using the orientation transform
             Vector3 worldUp = orientationTransform != null 
                 ? orientationTransform.up 
