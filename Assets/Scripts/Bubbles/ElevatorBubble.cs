@@ -1,14 +1,15 @@
 using System;
 using GGJ.GameFlow;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace GGJ.Bubbles
 {
-    [RequireComponent(typeof(Rigidbody))]
     public class ElevatorBubble : BubbleBase, IBubble
     {
         public Bubbel bubbleHandler;
-        private Player player;
+        [SerializeField] private Player player;
+        [SerializeField] private Vector2 floatSpeedRange;
         
         public void Pop()
         {
@@ -17,17 +18,22 @@ namespace GGJ.Bubbles
         
         private void Update()
         {
-            if (player)
-            {
-                player.MoveWithBubble(transform.position);
-            }
+            FloatUp();
+            if (!player) return;
+            var speedModifier = Random.Range(floatSpeedRange.x, floatSpeedRange.y);
+            player.MoveWithBubble(transform.position, speedModifier);
         }
         
         private void OnTriggerEnter(Collider other)
         {
             if (!other.CompareTag("Player")) return;
             player = other.GetComponent<Player>();
-            //player.AttachToBubble(this);
+        }
+        
+        private void OnTriggerExit(Collider other)
+        {
+            if (!other.CompareTag("Player")) return;
+            player = null;
         }
     }
 }

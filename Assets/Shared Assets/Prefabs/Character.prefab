@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6172346398724831456}
   - component: {fileID: 2300535068082639117}
   - component: {fileID: 2631427559029024818}
+  - component: {fileID: 906947812730384847}
   m_Layer: 0
   m_Name: Character
   m_TagString: Untagged
@@ -79,7 +80,7 @@ CharacterController:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   m_LayerOverridePriority: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
@@ -110,6 +111,29 @@ MonoBehaviour:
   cameraTransform: {fileID: 0}
   orientationTransform: {fileID: 0}
   controller: {fileID: 0}
+--- !u!136 &906947812730384847
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1108272616509393471}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 64
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 55
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &1376685756359372601
 GameObject:
   m_ObjectHideFlags: 0

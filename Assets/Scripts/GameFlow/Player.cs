@@ -48,10 +48,10 @@ namespace GGJ.GameFlow
             joint.connectedBody = elevatorBubble.GetComponent<Rigidbody>();
         }
 
-        public void MoveWithBubble(Vector3 bubblePosition)
+        public void MoveWithBubble(Vector3 bubblePosition, float speedModifier = 1)
         {
             Vector3 offset = bubblePosition - transform.position;
-            _controller.Move(offset * Time.deltaTime);
+            _controller.Move(offset * (speedModifier * Time.deltaTime));
         }
     }
 }
