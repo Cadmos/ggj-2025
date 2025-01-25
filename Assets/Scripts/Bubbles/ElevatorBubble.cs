@@ -8,7 +8,7 @@ namespace GGJ.Bubbles
     public class ElevatorBubble : BubbleBase, IBubble
     {
         public Bubbel bubbleHandler;
-        [SerializeField] private Player player;
+        [SerializeField] public Player player;
         [SerializeField] private Vector2 floatSpeedRange;
         
         public void Pop()

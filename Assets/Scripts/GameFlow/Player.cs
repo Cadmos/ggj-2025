@@ -18,11 +18,6 @@ namespace GGJ.GameFlow
             _controller = GetComponent<CharacterController>();
         }
 
-        private void Update()
-        {
-            //Debug.Log($"Player is touching ground: {_controller.isGrounded}. From side: {_controller.collisionFlags}");
-        }
-
         public void MoveTo(Vector3 spawnPointPosition)
         {
             Vector3 offset = spawnPointPosition - transform.position;
@@ -42,16 +37,24 @@ namespace GGJ.GameFlow
             }
         }
 
-        public void AttachToBubble(ElevatorBubble elevatorBubble)
-        {
-            var joint = gameObject.AddComponent<FixedJoint>();
-            joint.connectedBody = elevatorBubble.GetComponent<Rigidbody>();
-        }
-
         public void MoveWithBubble(Vector3 bubblePosition, float speedModifier = 1)
         {
-            Vector3 offset = bubblePosition - transform.position;
+            Vector3 offset = bubblePosition;
+            offset.x -= transform.position.x;
             _controller.Move(offset * (speedModifier * Time.deltaTime));
+        }
+
+        private void OnControllerColliderHit(ControllerColliderHit hit)
+        {
+            if (hit.gameObject.CompareTag("Bubble"))
+            {
+                var elevatorBubble = hit.gameObject.GetComponent<ElevatorBubble>();
+                
+                if (elevatorBubble)
+                {
+                    elevatorBubble.player = this;
+                }
+            }
         }
     }
 }
