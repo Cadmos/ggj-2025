@@ -1,13 +1,15 @@
 using System;
 using GGJ.GameFlow.Spawning;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace GGJ.GameFlow
 {
     [RequireComponent(typeof(CharacterController))]
     public class Player : MonoBehaviour
     {
-        public PlayerSpawn activePlayerSpawn;
+        [FormerlySerializedAs("activePlayerSpawn")] public PlayerSpawn startSpawn;
+        public Checkpoint currentCheckpoint;
         private CharacterController _controller;
         
         private void Awake()
@@ -22,12 +24,21 @@ namespace GGJ.GameFlow
 
         public void MoveTo(Vector3 spawnPointPosition)
         {
-            transform.position = spawnPointPosition;
+            Vector3 offset = spawnPointPosition - transform.position;
+            _controller.Move(offset);
         }
 
         public void GoToCheckpoint()
         {
-            MoveTo(activePlayerSpawn.transform.position);
+            if (currentCheckpoint == null)
+            {
+                Debug.LogWarning("No checkpoint assigned to the player");
+                MoveTo(startSpawn.transform.position);
+            }
+            else
+            {
+                MoveTo(currentCheckpoint.SpawnPoint);
+            }
         }
     }
 }
