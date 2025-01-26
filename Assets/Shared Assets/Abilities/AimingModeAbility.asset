@@ -12,6 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6589a491b7f48338b78724394f59f8b, type: 3}
   m_Name: AimingModeAbility
   m_EditorClassIdentifier: 
-  toggleAim: 1
   aimTimeScale: 0.1
-  aimCooldown: 1
+  aimCooldown: 0

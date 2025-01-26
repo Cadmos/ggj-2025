@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e73cf072fbdd48f59dfec8af2f7fc141, type: 3}
   m_Name: JumpAbility
   m_EditorClassIdentifier: 
-  jumpDuration: 1
+  jumpDuration: 1.5
   jumpCurve:
     serializedVersion: 2
     m_Curve:
@@ -46,6 +46,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  jumpHeight: 5
+  jumpHeight: 10
   maxJumpCharges: 2
-  disableGravityDuringJump: 1
+  disableGravityDuringJump: 0
