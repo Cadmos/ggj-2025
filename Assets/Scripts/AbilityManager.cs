@@ -19,9 +19,16 @@ namespace GGJ
         [Tooltip("Reference to the CharacterController on this object.")]
         public CharacterController controller;
 
+        [Header("Animator")]
+        [Tooltip("Animator that all abilities can use.")]
+        public Animator animator;
+
         [Header("Cinemachine Setup")]
         [Tooltip("Optional: Cinemachine virtual camera used for aiming.")]
         public CinemachineCamera aimCamera;
+
+        public Vector3 _finalVelocity;
+        private int _lastState = -1;
 
         private void Awake()
         {
@@ -34,57 +41,95 @@ namespace GGJ
                     cameraTransform, 
                     orientationTransform, 
                     controller,
+                    animator,
                     this  // pass the manager reference
                 );
             }
         }
 
-        private void Update()
+private void Update()
+{
+    float dt = Time.deltaTime;
+
+    // 1. Update abilities
+    foreach (var ability in abilities)
+    {
+        if (!ability) continue;
+        if (ability.IsActive)
         {
-            // Standard: gather velocities, handle locks, etc.
-            float dt = Time.deltaTime;
-
-            // 1. Update abilities
-            foreach (var ability in abilities)
-            {
-                if (ability == null) continue;
-                if (ability.IsActive)
-                {
-                    ability.UpdateAbility(dt);
-                }
-            }
-
-            // 2. Determine which abilities are disabled by others
-            var disabledAbilityTypes = new HashSet<System.Type>();
-            foreach (var ability in abilities)
-            {
-                if (ability == null) continue;
-                if (ability.IsActive)
-                {
-                    foreach (var type in ability.DisableAbilitiesWhileActive)
-                    {
-                        disabledAbilityTypes.Add(type);
-                    }
-                }
-            }
-
-            // 3. Collect final velocity
-            Vector3 finalVelocity = Vector3.zero;
-            foreach (var ability in abilities)
-            {
-                if (!ability) continue;
-
-                // If not disabled
-                if (ability.IsActive && !disabledAbilityTypes.Contains(ability.GetType()))
-                {
-                    finalVelocity += ability.GetDesiredVelocity(dt);
-                }
-            }
-
-            // 4. Move once
-            controller.Move(finalVelocity);
+            ability.UpdateAbility(dt);
         }
+    }
 
+    // 2. Determine which abilities are disabled by others
+    var disabledAbilityTypes = new HashSet<System.Type>();
+    foreach (var ability in abilities)
+    {
+        if (!ability) continue;
+        if (ability.IsActive)
+        {
+            foreach (var type in ability.DisableAbilitiesWhileActive)
+            {
+                disabledAbilityTypes.Add(type);
+            }
+        }
+    }
+
+    // 3. Collect final velocity
+    _finalVelocity = Vector3.zero;
+    foreach (var ability in abilities)
+    {
+        if (!ability) continue;
+        if (ability.IsActive && !disabledAbilityTypes.Contains(ability.GetType()))
+        {
+            _finalVelocity += ability.GetDesiredVelocity(dt);
+        }
+    }
+
+    // 4. Move once
+    controller.Move(_finalVelocity);
+    _finalVelocity = Vector3.zero;
+
+    // === NEW ANIMATION LOGIC ===
+
+    // Find the highest-priority active ability
+    AbilityBase highestPriorityAbility = null;
+    int highestPriority = -1;
+
+    foreach (var ability in abilities)
+    {
+        if (!ability) continue;
+        if (ability.IsActive)
+        {
+            // If it's not disabled
+            if (!disabledAbilityTypes.Contains(ability.GetType()))
+            {
+                if (ability.AnimationPriority > highestPriority)
+                {
+                    highestPriority = ability.AnimationPriority;
+                    highestPriorityAbility = ability;
+                }
+            }
+        }
+    }
+
+    int stateToPlay = 0;
+    if (highestPriorityAbility != null)
+    {
+        stateToPlay = highestPriorityAbility.AnimationState;
+    }
+
+    // Only update the animator if the state changed
+    if (animator && stateToPlay != _lastState)
+    {
+        animator.SetInteger("AbilityState", stateToPlay);
+        _lastState = stateToPlay;
+    }
+}
+        public void AddToFinalVelocity(Vector3 value)
+        {
+            _finalVelocity += value;
+        }
         // === Input Callbacks ===
         public void OnMove(InputValue value)
         {

@@ -19,7 +19,11 @@ namespace GGJ
 
         private float _dashTimer;
         private Vector3 _dashDirection;
-
+        
+        // DashAbility
+        public override int AnimationState => 4;
+        public override int AnimationPriority => 4;
+        
         // If you want to disable other abilities while active,
         // override DisableAbilitiesWhileActive:
         public override List<Type> DisableAbilitiesWhileActive 
@@ -34,10 +38,12 @@ namespace GGJ
             Transform camera, 
             Transform orientation, 
             CharacterController character,
+            Animator characterAnimator,
             AbilityManager abilityManager = null
+            
         )
         {
-            base.Initialize(go, camera, orientation, character, abilityManager);
+            base.Initialize(go, camera, orientation, character, characterAnimator, abilityManager);
 
             _dashTimer = 0f;
             _dashDirection = Vector3.zero;

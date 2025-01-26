@@ -15,12 +15,15 @@ namespace GGJ
         public float aimCooldown = 1f;
 
         // Are we currently in aiming mode?
-        private bool _isAiming;
+        private bool _isAiming = false;
         // Tracks remaining cooldown after we exit aiming
         private float _cooldownRemaining;
 
+        public override int AnimationState => 5;
+        public override int AnimationPriority => 5; 
+        
         // We want the ability active so it can respond to input
-        public override bool IsActive => true;
+        public override bool IsActive => _isAiming;
 
         /// <summary>
         /// Disable Jump and Dash while aiming.
@@ -42,10 +45,12 @@ namespace GGJ
             Transform camera, 
             Transform orientation, 
             CharacterController character,
+            Animator characterAnimator,
             AbilityManager abilityManager = null
+            
         )
         {
-            base.Initialize(go, camera, orientation, character, abilityManager);
+            base.Initialize(go, camera, orientation, character, characterAnimator, abilityManager);
 
             _isAiming = false;
             _cooldownRemaining = 0f;
@@ -106,6 +111,7 @@ namespace GGJ
         /// </summary>
         public void StopAiming()
         {
+            Debug.Log("stop aiming");
             if (_isAiming)
             {
                 _isAiming = false;

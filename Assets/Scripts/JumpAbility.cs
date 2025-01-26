@@ -27,150 +27,120 @@ namespace GGJ
         public bool disableGravityDuringJump = false;
 
         // Internals
-        private bool  _isJumping;          // Are we currently in a jump arc?
-        private float _jumpTimer;          // Tracks time since jump start.
-        private float _previousCurveValue; // The jump curve value from the previous frame.
-        private int   _remainingJumps;     // How many jumps we have left.
+        private bool  _isJumping;           // True while in the jump arc
+        private float _jumpTimer;           // Time since jump start
+        private float _previousCurveValue;  // The curve value from last frame
+        private int   _remainingJumps;      // How many jumps are left
         
-        // We'll store the ground (start) Y position for the jump,
-        // so we can measure relative height from that baseline.
-        private float _jumpStartYPos;
+        private float _jumpStartYPos;       // Baseline Y (if needed)
 
-        /// <summary>
-        /// If we want to disable other abilities while jumping, specify them here.
-        /// For example, disable GravityAbility so it doesn't interfere.
-        /// If you also want to disable MoveAbility or anything else, add them here.
-        /// </summary>
+        public override int AnimationState => 3; 
+        public override int AnimationPriority => _isJumping ? 3 : 0; 
+
         public override List<Type> DisableAbilitiesWhileActive
         {
             get
             {
+                // Disable Gravity if requested, but only while actually jumping
                 if (disableGravityDuringJump && _isJumping)
                 {
-                    // Example: disable just GravityAbility
                     return new List<Type> { typeof(GravityAbility) };
                 }
-                // Otherwise, disable nothing
                 return new List<Type>();
             }
         }
 
         /// <summary>
-        /// We keep this ability "active" at all times so we can detect jump input.
-        /// If you only wanted it active while there's a jump available, 
-        /// you could do something else, but typically "true" is simplest.
+        /// Only "active" while currently in the jump arc, so the AbilityManager knows to play jump anim.
         /// </summary>
-        public override bool IsActive => true;
+        public override bool IsActive => _isJumping;
 
         public override void Initialize(
             GameObject go, 
             Transform camera, 
             Transform orientation, 
             CharacterController character,
-            AbilityManager abilityManager = null
-        )
+            Animator characterAnimator,
+            AbilityManager abilityManager = null)
         {
-            base.Initialize(go, camera, orientation, character, abilityManager);
+            base.Initialize(go, camera, orientation, character, characterAnimator, abilityManager);
 
-            _isJumping = false;
-            _jumpTimer = 0f;
+            _isJumping          = false;
+            _jumpTimer          = 0f;
             _previousCurveValue = 0f;
-            _remainingJumps = maxJumpCharges;
+            _remainingJumps     = maxJumpCharges;
         }
 
         public override void UpdateAbility(float deltaTime)
         {
-            if (controller == null) return;
+            if (!controller) return;
 
-            // Check if we're grounded; if so, reset charges and ensure no leftover arc
-            if (controller.isGrounded && !_isJumping)
+            // Check if character is on the ground
+            if (controller.isGrounded)
             {
+                // If we were jumping, forcibly end the jump
+                if (_isJumping)
+                {
+                    EndJump();
+                }
+                // Reset jump charges now that we're grounded
                 _remainingJumps = maxJumpCharges;
             }
-
-            // If we are currently in a jump arc, update the arc timer
-            if (_isJumping)
+            else
             {
-                _jumpTimer += deltaTime;
-                float normalizedTime = _jumpTimer / jumpDuration;
-
-                if (normalizedTime >= 1f)
+                // If we're in a jump arc, continue it
+                if (_isJumping)
                 {
-                    // Jump arc completed
-                    EndJump();
+                    _jumpTimer += deltaTime;
+                    float normalizedTime = _jumpTimer / jumpDuration;
+
+                    // If we exceed the jump duration, end the jump
+                    if (normalizedTime >= 1f)
+                    {
+                        EndJump();
+                    }
                 }
             }
         }
 
         public override Vector3 GetDesiredVelocity(float deltaTime)
         {
-            // If we're not jumping, return no vertical displacement
+            // If we're not jumping, no vertical displacement
             if (!_isJumping)
                 return Vector3.zero;
 
-            // Calculate how far along we are (0..1)
             float normalizedTime = Mathf.Clamp01(_jumpTimer / jumpDuration);
-
-            // Evaluate the curve at the current time
             float currentCurveValue = jumpCurve.Evaluate(normalizedTime) * jumpHeight;
 
-            // The difference from last frame's curve value is the actual displacement in Y
             float deltaY = currentCurveValue - _previousCurveValue;
-
-            // Update for next frame
             _previousCurveValue = currentCurveValue;
 
-            // Because the manager expects "velocity * deltaTime" for movement, 
-            // we can either:
-            // 1) Return 'deltaY' directly as displacement (which the manager won't multiply again),
-            // 2) Or treat 'deltaY / deltaTime' as velocity.
-
-            // Usually, each ability's GetDesiredVelocity() is returning velocity * dt 
-            // or "displacement" for the manager's final Move(). If your manager 
-            // sums "velocities" and multiplies by deltaTime once, we want velocity here.
-
-            // Let's assume the manager does: finalVelocity += ability.GetDesiredVelocity(dt);
-            // and then calls controller.Move(finalVelocity). If the manager doesn't multiply 
-            // by dt again, we should return displacement. 
-            // -> We'll call it "desiredDisplacement" to clarify:
-
-            Vector3 desiredDisplacement = new Vector3(0f, deltaY, 0f);
-
-            return desiredDisplacement;
+            // Return the displacement (the manager doesn't multiply by deltaTime again)
+            return new Vector3(0f, deltaY, 0f);
         }
 
         public override void OnJumpInput()
         {
-            // We only trigger a jump if:
-            // 1) We have remaining jumps
-            // 2) We are NOT already in a jump, OR we decide to allow mid-arc re-jump 
-            //    (in which case you'd forcibly start a new arc, but that might feel jarring).
-            // For a standard multi-jump, you might allow re-jump mid-air, so let's do that:
+            // Only jump if we still have charges
             if (_remainingJumps > 0)
             {
                 StartJump();
-                // Decrement a jump charge
                 _remainingJumps--;
             }
-            // If no jumps remain, do nothing.
         }
 
         private void StartJump()
         {
-            // Begin a fresh jump arc from the current position
-            _isJumping = true;
-            _jumpTimer = 0f;
-
-            // Record the baseline for our curve
-            _jumpStartYPos = owner.transform.position.y;
+            _isJumping          = true;
+            _jumpTimer          = 0f;
             _previousCurveValue = 0f;
+            _jumpStartYPos      = owner.transform.position.y;
         }
 
         private void EndJump()
         {
-            // Jump arc has ended
-            _isJumping = false;
-            _jumpTimer = 0f;
+            _isJumping          = false;
+            _jumpTimer          = 0f;
             _previousCurveValue = 0f;
         }
     }

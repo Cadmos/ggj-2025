@@ -21,10 +21,11 @@ namespace GGJ
             Transform camera, 
             Transform orientation, 
             CharacterController character,
+            Animator characterAnimator,
             AbilityManager abilityManager = null
         )
         {
-            base.Initialize(go, camera, orientation, character, abilityManager);
+            base.Initialize(go, camera, orientation, character, characterAnimator, abilityManager);
             _verticalVelocity = 0f;
         }
 

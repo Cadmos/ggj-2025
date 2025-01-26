@@ -9,6 +9,10 @@ namespace GGJ
         public float interactRange = 2f;
         public LayerMask interactableLayers;
         // Optional: if you have multiple layers or a single 'Interactable' layer
+        
+        // InteractAbility
+        //public override int AnimationState => 5;
+        //public override int AnimationPriority => 5; 
 
         public override void OnInteractInput()
         {

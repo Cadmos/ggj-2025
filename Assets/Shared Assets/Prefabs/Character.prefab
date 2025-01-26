@@ -115,7 +115,9 @@ MonoBehaviour:
   cameraTransform: {fileID: 0}
   orientationTransform: {fileID: 0}
   controller: {fileID: 2300535068082639117}
+  animator: {fileID: 6530527080893223356}
   aimCamera: {fileID: 0}
+  _finalVelocity: {x: 0, y: 0, z: 0}
 --- !u!114 &8962467521643113492
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -294,5 +296,10 @@ PrefabInstance:
 --- !u!4 &883051955298520006 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2708d2b71123a9f41ad0f6ec854f25cc, type: 3}
+  m_PrefabInstance: {fileID: 849916365248998445}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &6530527080893223356 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 2708d2b71123a9f41ad0f6ec854f25cc, type: 3}
   m_PrefabInstance: {fileID: 849916365248998445}
   m_PrefabAsset: {fileID: 0}
